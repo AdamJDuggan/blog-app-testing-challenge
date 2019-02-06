@@ -113,6 +113,8 @@ describe("POST endpoint", function(){
     })
 })
 // --------------------------- END OF POST ---------------------------
+
+// PUT request
 describe("PUT endpoint", function(){
     it("should update an exisiting blog entry", function(){
         let updatedData = generateBlogPostData()
@@ -133,7 +135,28 @@ describe("PUT endpoint", function(){
         })
     })
 });
+// --------------------------- END OF POST ---------------------------
 
+// Delte request: get a post and its id, delete the post then check it is not in db
+describe("DELETE request", () => {
+    it("should delete a post from db", () => {
+        let returnedPost;
+        return BlogPost
+        .findOne()
+        .then(res => {
+            returnedPost = res;
+            return chai.request(app).delete(`/posts/${returnedPost.id}`)
+        })
+        .then(res => {
+            expect(res).to.have.status(204);
+            return BlogPost.findById(returnedPost.id);
+        })
+        .then(delPost => {
+            should.not.exist(delPost);
+        })
+        
+    })
+})
 
 
 });
